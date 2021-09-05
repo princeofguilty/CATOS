@@ -62,6 +62,7 @@ void LCD_vidWriteString(u8 *Copy_String)
 }
 
 void LCD_vidRefresh(){
+	LCD_vidGoTo(0,0);
 	for(int i=0; i<ROWS; i++){
 		for(int j=0; j<COLUMNS; j++){
 			LCD_vidWriteData(LCD_content[i][j]);
@@ -77,6 +78,7 @@ void LCD_vidShiftLineUp(){
 		}
 	}
 	LCD_vidRefresh();
+	LCD_vidGoTo(1,0);
 
 }
 
@@ -92,7 +94,7 @@ void LCD_vidInit(u8 PORTcfg, u8 PORTview, u8 start_pin_cfg)
 	DIO_vidSetPinDirection(PORTcfg_int,CFG_pin_0,DIO_u8OUTPUT);
 	DIO_vidSetPinDirection(PORTcfg_int,CFG_pin_1,DIO_u8OUTPUT);
 	DIO_vidSetPinDirection(PORTcfg_int,CFG_pin_2,DIO_u8OUTPUT);
-	DIO_vidSetPortDirecion(PORTview_int,0xFF);
+	DIO_vidSetPortDirection(PORTview_int,0xFF);
 
 	_delay_ms(50); /* Step_1 */
 	LCD_vidSendCommand(0b00111000); /* Step_2 */
