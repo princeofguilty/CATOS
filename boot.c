@@ -28,13 +28,10 @@ void boot(){
 
 int main(){
 	LCD_Boot();
-	LCD_vidWriteString("abc");
-	_delay_ms(500);
-	LCD_vidGoTo(1,0);
-	LCD_vidWriteString("xyz");
-	_delay_ms(200);
-	LCD_vidShiftLineUp();
-	LCD_vidWriteString("123");
-	_delay_ms(500);
+	LCD_NewMessage("OS: booting!");
+	LCD_NewMessage("OS: Hello World!");
+	LCD_NewMessage("OS: NEWLINE!");
+
+
 	return 0;
 }

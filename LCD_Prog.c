@@ -13,18 +13,10 @@ u8 PORTview_int;
 u8 CFG_pin_0, CFG_pin_1, CFG_pin_2;
 
 
-u8 LCD_content[ROWS][COLUMNS]={' '};
-u8 Cursor_Column=0, Cursor_Row=0;
+u8 LastLine[17]={'\0'};
 
 void LCD_vidWriteData(u8 Copy_Data)
 {
-	if(Cursor_Column == COLUMNS){
-		Cursor_Column = 0;
-		Cursor_Row++;
-	}
-	if(Cursor_Row>=ROWS)
-		return;
-
 	DIO_vidSetPinVal(PORTcfg_int,CFG_pin_0,DIO_u8HIGH);
 	DIO_vidSetPinVal(PORTcfg_int,CFG_pin_1,DIO_u8LOW);
 	DIO_vidSetPortVal(PORTview_int,Copy_Data);
@@ -32,21 +24,10 @@ void LCD_vidWriteData(u8 Copy_Data)
 	_delay_ms(2);
 	DIO_vidSetPinVal(PORTcfg_int,CFG_pin_2,DIO_u8LOW);
 
-	LCD_content[Cursor_Row][Cursor_Column++] = Copy_Data;
 }
 
 void LCD_vidSendCommand(u8 Copy_Command)
 {
-	Cursor_Column = 0;
-	Cursor_Row = 0;
-
-	if(Copy_Command == LCD_u8CLEAR_DISPLAY)
-		for(int i=0; i<ROWS; i++){
-			for (int j=0; j<COLUMNS; j++){
-				LCD_content[i][j] = ' ';
-			}
-		}
-
 	DIO_vidSetPinVal(PORTcfg_int,CFG_pin_0,DIO_u8LOW);
 	DIO_vidSetPinVal(PORTcfg_int,CFG_pin_1,DIO_u8LOW);
 	DIO_vidSetPortVal(PORTview_int,Copy_Command);
@@ -57,30 +38,47 @@ void LCD_vidSendCommand(u8 Copy_Command)
 
 void LCD_vidWriteString(u8 *Copy_String)
 {
-	for (int i=0;Copy_String[i]!='\0';i++)
+	for (int i=0;Copy_String[i]!='\0' && i<17;i++){
 		LCD_vidWriteData(Copy_String[i]);
+//		LastLine[i] = Copy_String[i];
+	}
 }
 
-void LCD_vidRefresh(){
+void LCD_NewMessage(u8 Message[]){
+	LCD_vidSendCommand(LCD_u8CLEAR_DISPLAY);
 	LCD_vidGoTo(0,0);
-	for(int i=0; i<ROWS; i++){
-		for(int j=0; j<COLUMNS; j++){
-			LCD_vidWriteData(LCD_content[i][j]);
-		}
-	}
-}
-
-void LCD_vidShiftLineUp(){
-	for(int i=0; i<ROWS-1; i++){
-		for(int j=0; j<COLUMNS; j++)
-		{
-			LCD_content[i][j] = LCD_content[i+1][j];
-		}
-	}
-	LCD_vidRefresh();
+	LCD_vidWriteString(LastLine);
 	LCD_vidGoTo(1,0);
-
+	LCD_vidWriteString(Message);
+	for (int i=0; Message[i]!='\0' && i<17; i++)
+		LastLine[i] = Message[i];
 }
+
+//void LCD_vidRefresh(){
+//	LCD_vidGoTo(0,0);
+//	for(int i=0; i<ROWS; i++){
+//		for(int j=0; j<COLUMNS; j++){
+//			LCD_vidWriteData(LCD_content[i][j]);
+//		}
+//	}
+//
+//	LCD_vidGoTo(Cursor_Row, Cursor_Column);
+//}
+
+//void LCD_vidShiftLineUp(){
+//	for(int i=0; i<ROWS-1; i++){
+//		for(int j=0; j<COLUMNS; j++)
+//		{
+//			LCD_content[i][j] = LCD_content[i+1][j];
+//		}
+//	}
+//	for(int j=0; j<COLUMNS; j++)
+//	{
+//		LCD_content[ROWS-1][j] = ' ';
+//	}
+//	LCD_vidRefresh();
+//	LCD_vidGoTo(ROWS-1,0);
+//}
 
 void LCD_vidInit(u8 PORTcfg, u8 PORTview, u8 start_pin_cfg)
 {
@@ -112,13 +110,9 @@ void LCD_vidGoTo(u8 Copy_Row, u8 Copy_Column)
 		switch(Copy_Row)
 		{
 		case 0:
-			Cursor_Row = 0;
-			Cursor_Column = Copy_Column;
 			LCD_vidSendCommand((0b10000000)+Copy_Column);
 			break;
 		case 1:
-			Cursor_Row = 1;
-			Cursor_Column = Copy_Column;
 			LCD_vidSendCommand((0b11000000)+Copy_Column);
 			break;
 		}

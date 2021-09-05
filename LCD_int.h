@@ -14,8 +14,8 @@ void LCD_vidInit(u8 PORTcfg, u8 PORTview, u8 start_pin_cfg);
 
 void LCD_vidGoTo(u8 Copy_Row, u8 Copy_Column);
 
-void LCD_vidRefresh();
-void LCD_vidShiftLineUp();
+//void LCD_vidRefresh();
+//void LCD_vidShiftLineUp();
 
 
 #endif /* LCD_INT_H_ */
