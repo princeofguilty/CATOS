@@ -5,7 +5,7 @@
  *      Author: Princ
  */
 
-#include "GPT_int.h"
+
 #include "STD_TYPES.h"
 #include "ATMEGA32_REGISTERS.h"
 #include "DIO_int.h"
@@ -23,4 +23,8 @@ void LCD_Boot(){
 
 void boot(){
 
+}
+
+int main(){
+	return 0;
 }

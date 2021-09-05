@@ -32,7 +32,7 @@ void LCD_vidWriteData(u8 Copy_Data)
 	_delay_ms(2);
 	DIO_vidSetPinVal(PORTcfg_int,CFG_pin_2,DIO_u8LOW);
 
-	LCD_content[Cursor_Row, Cursor_Column++] = Copy_Data;
+	LCD_content[Cursor_Row][Cursor_Column++] = Copy_Data;
 }
 
 void LCD_vidSendCommand(u8 Copy_Command)
@@ -43,7 +43,7 @@ void LCD_vidSendCommand(u8 Copy_Command)
 	if(Copy_Command == LCD_u8CLEAR_DISPLAY)
 		for(int i=0; i<ROWS; i++){
 			for (int j=0; j<COLUMNS; j++){
-				LCD_content = ' ';
+				LCD_content[i][j] = ' ';
 			}
 		}
 

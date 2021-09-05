@@ -2,7 +2,7 @@
 #include "ATMEGA32_REGISTERS.h"
 #include "BIT_MATH.h"
 #include "DIO_int.h"
-#include "GPT_int.h"
+
 
 #include "RTO_Interface.h"
 #include "RTO_Private.h"
